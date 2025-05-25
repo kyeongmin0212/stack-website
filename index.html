@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="자동매매 프로그램과 모의투자로 경제적 자유를 실현하세요." />
+    <meta name="author" content="E-F Team" />
+    <meta name="keywords" content="자동매매, 모의투자, 주식, 코인, 경제적 자유"/>
+    <title>E(conomic) - F(reedom)</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Font Awesome icons -->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap) -->
+    <link href="css/styles.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- TradingView Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        /* 다크 모드 테마 개선 */
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        /* 네비게이션 바 스타일 변경 */
+        #mainNav {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 로고 스타일 변경 */
+        .navbar-brand {
+            position: fixed;
+            left: 120px;
+            color: #000000 !important;
+            font-weight: bold;
+        }
+
+        /* 네비게이션 바 메뉴 스타일 변경 */
+        .navbar-nav {
+            display: flex !important;
+            flex-direction: row !important;
+            position: fixed;
+            right: 20px;
+        }
+
+        /* 특정 메뉴 항목 위치 조정 */
+        .navbar-nav li:nth-child(1),
+        .navbar-nav li:nth-child(2),
+        .navbar-nav li:nth-child(3) {
+            transform: translateX(-200px);
+        }
+
+        .navbar-collapse {
+            display: flex !important;
+            flex-basis: auto;
+        }
+
+        .navbar-toggler {
+            display: none;
+        }
+
+        /* 네비게이션 바 메뉴 글자색 변경 */
+        .navbar-nav .nav-link {
+            color: #000000 !important;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Menu 버튼 글자색 및 테두리 변경 */
+        .navbar-toggler {
+            color: #000000 !important;
+            border-color: #000000 !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .navbar-toggler:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* 그라데이션 및 그림자 효과 */
+        .card, .trade-panel, .position-info {
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover, .trade-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+
+        /* 버튼 스타일 개선 */
+        .btn {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 반응형 차트 */
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            max-height: 70vh;
+        }
+    </style>
+</head>
+<body id="page-top">
+    <!-- Navigation -->
+    <nav class="navbar navbar-light fixed-top" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">E - F</a>
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#about">주식(국내/해외)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">코인(업비트/빗썸/바이낸스)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indextest.html">모의투자</a></li>
+                    <li class="nav-item"><a class="nav-link" href="community.html">커뮤니티</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html">로그인</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">회원가입</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Masthead -->
+    <header class="masthead">
+        <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <h1 class="mx-auto my-0 text-uppercase">E - F</h1>
+                    <h2 class="text-white-50 mx-auto mt-2 mb-5">"경제적 자유의 길"<br>투자, 교육, 모의투자 플랫폼으로 누구나 경제적 자유 실현</h2>
+                    <a class="btn btn-primary" href="indextest.html">START</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- About -->
+    <section class="about-section text-center" id="about">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-white mb-4">1. STOCK(국내/해외)</h2>
+                    <p class="text-white-50">
+                        <a href="https://securities.koreainvestment.com/main/Main.jsp" target="_blank">한국투자증권</a><br>
+                        한국투자증권 API를 활용한 국내/해외 주식 자동매매 프로그램입니다.
+                    </p>
+                </div>
+            </div>
+            <img class="img-fluid" src="assets/img/ipad.png" alt="주식 매매 화면" />
+        </div>
+    </section>
+    <!-- Projects -->
+    <section class="projects-section bg-light" id="projects">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-0 mb-4 mb-lg-5 align-items-center">
+                <div class="col-xl-8 col-lg-7"><img class="img-fluid mb-3 mb-lg-0" src="assets/img/bg-masthead.jpg" alt="업비트 화면" /></div>
+                <div class="col-xl-4 col-lg-5">
+                    <div class="featured-text text-center text-lg-left">
+                        <h4>UPBIT</h4>
+                        <p class="text-black-50 mb-0">
+                            <a href="https://www.upbit.com/home" target="_blank">업비트</a><br>
+                            업비트 API를 활용한 자동매매 프로그램입니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid" src="assets/img/demo-image-01.jpg" alt="빗썸 화면" /></div>
+                <div class="col-lg-6">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-left">
+                                <h4 class="text-white">BITHUMB</h4>
+                                <p class="mb-0 text-white-50">
+                                    <a href="https://www.bithumb.com/react/" target="_blank">빗썸</a><br>
+                                    빗썸 API를 활용한 자동매매 프로그램입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row gx-0 justify-content-center">
+                <div class="col-lg-6"><img class="img-fluid" src="assets/img/demo-image-02.jpg" alt="바이낸스 화면" /></div>
+                <div class="col-lg-6 order-lg-first">
+                    <div class="bg-black text-center h-100 project">
+                        <div class="d-flex h-100">
+                            <div class="project-text w-100 my-auto text-center text-lg-right">
+                                <h4 class="text-white">BINANCE</h4>
+                                <p class="mb-0 text-white-50">
+                                    <a href="https://www.binance.com/en" target="_blank">바이낸스</a><br>
+                                    바이낸스 API를 활용한 코인 선물거래 자동매매 프로그램입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section bg-black" id="contact">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-map-marked-alt text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">주소</h4>
+                            <hr class="my-4 mx-auto" />
+                            <div class="small text-black-50">수원역</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-envelope text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">이메일</h4>
+                            <hr class="my-4 mx-auto" />
+                            <div class="small text-black-50"><a href="mailto:12banggong@naver.com">12banggong@naver.com</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-mobile-alt text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">전화</h4>
+                            <hr class="my-4 mx-auto" />
+                            <div class="small text-black-50">+82 10-5670-9401</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="social d-flex justify-content-center mt-4">
+                <a class="mx-2" href="https://github.com/your_id" target="_blank"><i class="fab fa-github"></i></a>
+                <a class="mx-2" href="https://www.instagram.com/0._.l21" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a class="mx-2" href="https://blog.naver.com/economic-freed0m" target="_blank"><i class="fab fa-neos"></i></a>
+                <a class="mx-2" href="https://www.youtube.com/@your_id" target="_blank"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </section>
+    <!-- 사용자 후기 -->
+    <section id="reviews" class="container my-5">
+        <h2 class="text-center">사용자 후기</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <p>"3개월 만에 15% 수익을 달성했어요. 정말 놀라운 프로그램입니다!"</p>
+                    <small>- 김민수 (투자 6개월 차)</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <p>"설정 10분 만에 자동매매 시작! 초보자도 쉽게 사용 가능해요."</p>
+                    <small>- 박지영 (투자 1개월 차)</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3">
+                    <p>"모의투자로 전략 테스트 후 실전 적용, 손실 없이 수익 내는 중!"</p>
+                    <small>- 이정훈 (투자 2년 차)</small>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 실시간 수익률 및 백테스트 -->
+    <section id="performance" class="container my-5 text-center">
+        <h2>실시간 수익률 & 백테스트</h2>
+        <p>최근 1년간 백테스트 결과: 평균 수익률 +12.5%</p>
+        <canvas id="backtestChart" style="max-height: 400px;"></canvas>
+    </section>
+    <!-- 무료 체험판 -->
+    <section id="free-trial" class="container my-5 text-center">
+        <h2>무료 체험판 신청</h2>
+        <p>지금 가입하고 7일간 무료 체험 + 모의투자 1,000 USD를 받아보세요!</p>
+        <a href="signup.html" class="btn btn-primary">무료 체험 신청</a>
+    </section>
+    <!-- 교육 자료 -->
+    <section id="education" class="container my-5">
+        <h2 class="text-center">투자 교육 자료</h2>
+        <ul class="list-group">
+            <li class="list-group-item"><a href="#">자동매매 설정 가이드 (PDF 다운로드)</a></li>
+            <li class="list-group-item"><a href="#">코인 & 주식 투자 기초 강의 (유튜브 링크)</a></li>
+            <li class="list-group-item"><a href="#">리스크 관리 방법 (웨비나 신청)</a></li>
+        </ul>
+    </section>
+    <!-- FAQ -->
+    <section id="faq" class="container my-5">
+        <h2 class="text-center">자주 묻는 질문</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        자동매매 프로그램의 수수료는 어떻게 되나요?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">월 50,000원 구독제이며, 거래 수수료는 거래소 정책에 따릅니다.</div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        모의투자는 어떻게 시작하나요?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">위의 '모의투자 체험' 섹션에서 바로 시작하거나, 가입 후 계정에서 이용 가능합니다.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 커뮤니티 & 상담 -->
+    <section id="community" class="container my-5 text-center">
+        <h2>커뮤니티 & 상담 지원</h2>
+        <p>실시간 상담과 투자 정보 공유 커뮤니티에 참여하세요.</p>
+        <a href="https://t.me/your_telegram" class="btn btn-info">텔레그램 참여</a>
+        <a href="https://open.kakao.com/0._.l21" class="btn btn-warning">카카오톡 상담</a>
+    </section>
+    <!-- Footer -->
+    <footer class="footer bg-black small text-center text-white-50">
+        <div class="container px-4 px-lg-5">Copyright © E-F 2025</div>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS -->
+    <script src="js/scripts.js"></script>
+    <!-- SB Forms JS -->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    <!-- Chart.js for backtest chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Trading Script -->
+    <script>
+        let chart;
+        let candleSeries;
+        let volumeSeries;
+        let interval = "1"; // 기본 1분 캔들
+        let lastPrice = 86877.60; // 초기 현재가 (스크린샷 기준)
+        let marginMode = "Cross"; // 기본 마진 모드
+        let leverage = 1; // 기본 레버리지
+
+        // 차트 초기화
+        const chartContainer = document.getElementById("chart");
+        chart = LightweightCharts.createChart(chartContainer, {
+            width: chartContainer.clientWidth,
+            height: 500,
+            layout: {
+                background: { color: "#1a1a1a" },
+                textColor: "#d1d4dc",
+            },
+            grid: {
+                vertLines: { color: "#2a2a2a" },
+                horzLines: { color: "#2a2a2a" },
+            },
+            timeScale: {
+                timeVisible: true,
+                secondsVisible: false,
+            },
+        });
+        candleSeries = chart.addCandlestickSeries();
+        volumeSeries = chart.addHistogramSeries({
+            color: '#26a69a',
+            priceFormat: {
+                type: 'volume',
+            },
+            priceScaleId: '',
+            scaleMargins: {
+                top: 0.8,
+                bottom: 0,
+            },
+        });
+
+        // 캔들 데이터 가져오기 (가상 데이터로 대체)
+        async function fetchKlines() {
+            const klines = Array.from({ length: 100 }, (_, i) => {
+                const time = Math.floor(Date.now() / 1000) - (100 - i) * 60;
+                const open = lastPrice + (Math.random() - 0.5) * 100;
+                const close = open + (Math.random() - 0.5) * 50;
+                const high = Math.max(open, close) + Math.random() * 20;
+                const low = Math.min(open, close) - Math.random() * 20;
+                return {
+                    timestamp: time * 1000,
+                    open,
+                    high,
+                    low,
+                    close,
+                    volume: Math.random() * 100
+                };
+            });
+            const candleData = klines.map(k => ({
+                time: Math.floor(new Date(k.timestamp).getTime() / 1000),
+                open: k.open,
+                high: k.high,
+                low: k.low,
+                close: k.close
+            }));
+            const volumeData = klines.map(k => ({
+                time: Math.floor(new Date(k.timestamp).getTime() / 1000),
+                value: k.volume,
+                color: k.close > k.open ? '#26a69a' : '#ef5350'
+            }));
+            candleSeries.setData(candleData);
+            volumeSeries.setData(volumeData);
+            lastPrice = klines[klines.length - 1].close;
+            document.getElementById("currentPrice").innerText = `${lastPrice.toFixed(2)} USDT`;
+            document.getElementById("volume").innerText = volumeData[volumeData.length - 1].value.toFixed(2);
+            updateOrderBook();
+        }
+
+        // 호가창 업데이트 (스크린샷 기준)
+        function updateOrderBook() {
+            const buyTable = document.getElementById("orderBookBuy");
+            const sellTable = document.getElementById("orderBookSell");
+            buyTable.innerHTML = "";
+            sellTable.innerHTML = "";
+
+            const sellPrices = [
+                { price: 86878.50, amount: 0.002, total: 2.363 },
+                { price: 86878.70, amount: 0.012, total: 2.361 },
+                { price: 86878.00, amount: 0.045, total: 2.349 },
+                { price: 86877.10, amount: 0.002, total: 2.304 },
+                { price: 86877.00, amount: 0.345, total: 2.302 }
+            ];
+            const buyPrices = [
+                { price: 86875.40, amount: 0.024, total: 1.873 },
+                { price: 86875.00, amount: 0.002, total: 1.827 },
+                { price: 86874.90, amount: 0.703, total: 7.374 },
+                { price: 86874.70, amount: 0.364, total: 7.738 },
+                { price: 86874.30, amount: 0.048, total: 7.786 }
+            ];
+
+            sellPrices.forEach(item => {
+                const sellRow = `<tr class="sell"><td>${item.price.toFixed(2)}</td><td>${item.amount}</td><td>${item.total}</td></tr>`;
+                sellTable.innerHTML = sellRow + sellTable.innerHTML;
+            });
+            buyPrices.forEach(item => {
+                const buyRow = `<tr class="buy"><td>${item.price.toFixed(2)}</td><td>${item.amount}</td><td>${item.total}</td></tr>`;
+                buyTable.innerHTML += buyRow;
+            });
+        }
+
+        // 마진 모드 설정
+        function setMarginMode(mode) {
+            marginMode = mode;
+            document.getElementById("crossBtn").classList.toggle("btn-primary", mode === "Cross");
+            document.getElementById("crossBtn").classList.toggle("btn-outline-light", mode !== "Cross");
+            document.getElementById("isolatedBtn").classList.toggle("btn-primary", mode === "Isolated");
+            document.getElementById("isolatedBtn").classList.toggle("btn-outline-light", mode !== "Isolated");
+        }
+
+        // 레버리지 업데이트
+        function updateLeverage(value) {
+            leverage = parseInt(value);
+            document.getElementById("leverageValue").innerText = leverage;
+        }
+
+        // 잔고 및 포지션 업데이트
+        let balance = 1000;
+        let position = null;
+
+        async function updateBalance() {
+            document.getElementById("balance").innerText = `${balance.toFixed(2)} USD`;
+            document.getElementById("position").innerText = position
+                ? `${position.side} ${position.amount.toFixed(3)} BTC @ ${position.entry_price.toFixed(2)} (레버리지: ${position.leverage}x, ${position.marginMode})`
+                : "없음";
+        }
+
+        // 수동 거래 요청
+        async function placeTrade(side) {
+            const amount = parseFloat(document.getElementById("amount").value);
+            if (side === "Close") {
+                if (!position) {
+                    alert("청산할 포지션이 없습니다.");
+                    return;
+                }
+                const profit = position.side === "Buy"
+                    ? (lastPrice - position.entry_price) * position.amount * position.leverage
+                    : (position.entry_price - lastPrice) * position.amount * position.leverage;
+                balance += profit;
+                if (marginMode === "Isolated") {
+                    balance += position.initialMargin; // 격리 모드에서는 초기 마진 반환
+                }
+                position = null;
+                alert(`포지션 청산 완료! 수익: ${profit.toFixed(2)} USD`);
+            } else {
+                if (position) {
+                    alert("이미 포지션이 있습니다. 먼저 청산해주세요.");
+                    return;
+                }
+                const cost = (amount * lastPrice) / leverage; // 필요 마진 계산
+                if (cost > balance) {
+                    alert("잔고가 부족합니다.");
+                    return;
+                }
+                balance -= cost;
+                position = {
+                    side: side,
+                    amount: amount,
+                    entry_price: lastPrice,
+                    leverage: leverage,
+                    marginMode: marginMode,
+                    initialMargin: cost
+                };
+                alert(`${side === "Buy" ? "롱" : "숏"} 포지션 진입! 진입가: ${lastPrice.toFixed(2)} USDT, 레버리지: ${leverage}x, 모드: ${marginMode}`);
+            }
+            updateBalance();
+        }
+
+        // 차트 간격 변경
+        function updateChartInterval(newInterval) {
+            interval = newInterval;
+            fetchKlines();
+        }
+
+        // 백테스트 차트
+        const backtestCtx = document.getElementById("backtestChart").getContext("2d");
+        new Chart(backtestCtx, {
+            type: "line",
+            data: {
+                labels: Array(12).fill().map((_, i) => `${i+1}월`),
+                datasets: [{
+                    label: "수익률 (%)",
+                    data: [2, 5, 3, 8, 10, 12, 15, 13, 11, 14, 12, 12.5],
+                    borderColor: "green",
+                    fill: false
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // 초기화 및 주기적 업데이트
+        fetchKlines();
+        updateBalance();
+        setInterval(() => {
+            fetchKlines();
+            updateBalance();
+        }, 60000); // 1분마다 업데이트
+    </script>
+</body>
+</html>

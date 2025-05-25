@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-F | 커뮤니티</title>
+    <!-- Font Awesome icons -->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Malgun Gothic', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+            margin-top: 70px;
+            flex-direction: row;
+        }
+        
+        .main-content {
+            flex: 3;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .right-sidebar {
+            flex: 1;
+            padding: 20px;
+            background-color: #1a1a1a;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 15px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .post-form textarea, .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        
+        .post-form textarea:focus, .comment-form textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        
+        .post-item, .comment-item {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+        
+        .post-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comment-item {
+            margin-left: 20px;
+            background-color: #2a2a2a;
+            border-left: 3px solid #2196F3;
+        }
+        
+        .post-header, .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .post-content, .comment-content {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .post-footer, .comment-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #aaa;
+        }
+        
+        .news-item {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #ff9800;
+            transition: all 0.3s ease;
+        }
+        
+        .news-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .news-item a {
+            color: #ff9800;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .news-summary {
+            color: #ccc;
+            margin: 10px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3e8e41;
+            border-color: #3e8e41;
+        }
+        
+        .btn-secondary {
+            background-color: #2196F3;
+            border-color: #2196F3;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #0b7dda;
+            border-color: #0b7dda;
+        }
+        
+        .post-form-container {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .post-form-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .upload-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-button {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+        
+        .action-button:hover {
+            color: #fff;
+        }
+        
+        .comment-count {
+            color: #2196F3;
+        }
+
+        /* 로딩 인디케이터 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .loading .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #4CAF50;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                margin-top: 60px;
+            }
+            
+            .main-content, .right-sidebar {
+                flex: none;
+                width: 100%;
+                padding: 10px;
+            }
+            
+            .right-sidebar {
+                border-top: 1px solid #333;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .navbar-nav .nav-link {
+                font-size: 0.9rem;
+                padding: 5px;
+            }
+            
+            .post-form textarea, .comment-form textarea {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">E - F</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html#about">주식(국내/해외)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#projects">코인(업비트/빗썸/바이낸스)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indextest.html">모의투자</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="community.html">커뮤니티</a></li>
+                    <li class="nav-item"><a class="nav-link" href="signup.html">회원가입</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">로그인</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="container">
+        <!-- 커뮤니티 섹션 -->
+        <div class="main-content">
+            <div class="section-title">커뮤니티</div>
+            
+            <div class="post-form-container">
+                <div class="post-form-title">새 게시물 작성</div>
+                <div class="post-form">
+                    <textarea id="postTitle" placeholder="제목을 입력하세요..." rows="1"></textarea>
+                    <textarea id="postContent" placeholder="게시글을 작성하세요... (경제 분석, 투자 아이디어, 질문 등)" rows="5"></textarea>
+                    <div class="post-actions">
+                        <button onclick="addPost()" class="btn btn-primary">게시하기</button>
+                    </div>
+                    <div id="uploadSuccess" class="upload-success">
+                        <i class="fas fa-check-circle"></i> 게시물이 성공적으로 업로드되었습니다!
+                    </div>
+                </div>
+            </div>
+            
+            <div id="postFilter" class="mb-3">
+                <select id="postSortOption" class="form-select bg-dark text-white" onchange="renderPosts()">
+                    <option value="newest">최신순</option>
+                    <option value="oldest">오래된순</option>
+                    <option value="comments">댓글 많은순</option>
+                </select>
+            </div>
+            
+            <div id="postList"></div>
+        </div>
+        
+        <!-- 오른쪽 사이드바 (뉴스 피드) -->
+        <div class="right-sidebar">
+            <div class="section-title">최신 경제 뉴스</div>
+            <div id="newsFilter" class="mb-3">
+                <select id="newsCategory" class="form-select bg-dark text-white" onchange="fetchNews()">
+                    <option value="비트코인">비트코인</option>
+                    <option value="주식시장">주식시장</option>
+                    <option value="경제전망">경제전망</option>
+                    <option value="금리">금리</option>
+                </select>
+            </div>
+            <div id="newsFeed">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>뉴스를 불러오는 중...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 게시글 추가
+        function addPost() {
+            const title = document.getElementById("postTitle").value;
+            const content = document.getElementById("postContent").value;
+            
+            if (!title) {
+                alert("제목을 입력하세요!");
+                return;
+            }
+            
+            if (!content) {
+                alert("게시글 내용을 입력하세요!");
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                timestamp: new Date().toLocaleString(),
+                author: "사용자", // 로그인 기능 추가 시 실제 사용자명으로 변경
+                likes: 0,
+                comments: []
+            };
+            
+            posts.push(newPost);
+            localStorage.setItem("posts", JSON.stringify(posts));
+            
+            document.getElementById("postTitle").value = "";
+            document.getElementById("postContent").value = "";
+            
+            // 업로드 성공 메시지 표시
+            const uploadSuccess = document.getElementById("uploadSuccess");
+            uploadSuccess.style.display = "block";
+            
+            // 3초 후 메시지 숨기기
+            setTimeout(() => {
+                uploadSuccess.style.display = "none";
+            }, 3000);
+            
+            renderPosts();
+            
+            // 새 게시물로 스크롤
+            setTimeout(() => {
+                const newPostElement = document.querySelector('.post-item');
+                if (newPostElement) {
+                    newPostElement.scrollIntoView({ behavior: 'smooth' });
+                    newPostElement.style.backgroundColor = '#2a3b2a';
+                    setTimeout(() => {
+                        newPostElement.style.backgroundColor = '#222';
+                    }, 1000);
+                }
+            }, 100);
+        }
+
+        // 댓글 추가
+        function addComment(postId) {
+            const commentInput = document.getElementById(`commentInput-${postId}`);
+            const content = commentInput.value;
+            if (!content) {
+                alert("댓글 내용을 입력하세요!");
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex !== -1) {
+                posts[postIndex].comments.push({
+                    id: Date.now(),
+                    content: content,
+                    author: "사용자", // 로그인 기능 추가 시 실제 사용자명으로 변경
+                    timestamp: new Date().toLocaleString(),
+                    likes: 0
+                });
+                
+                localStorage.setItem("posts", JSON.stringify(posts));
+                commentInput.value = "";
+                
+                // 댓글 섹션 보이기
+                const commentSection = document.getElementById(`comments-${postId}`);
+                if (commentSection) {
+                    commentSection.style.display = 'block';
+                }
+                
+                renderPosts();
+                
+                // 새 댓글로 스크롤
+                setTimeout(() => {
+                    const newCommentElement = document.querySelector(`#comments-${postId} .comment-item:last-child`);
+                    if (newCommentElement) {
+                        newCommentElement.scrollIntoView({ behavior: 'smooth' });
+                        newCommentElement.style.backgroundColor = '#1a3b4a';
+                        setTimeout(() => {
+                            newCommentElement.style.backgroundColor = '#2a2a2a';
+                        }, 1000);
+                    }
+                }, 100);
+            }
+        }
+
+        // 좋아요 기능
+        function likePost(postId) {
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex !== -1) {
+                posts[postIndex].likes += 1;
+                localStorage.setItem("posts", JSON.stringify(posts));
+                renderPosts();
+            }
+        }
+
+        // 댓글 좋아요 기능
+        function likeComment(postId, commentId) {
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            const post = posts.find(p => p.id === postId);
+            
+            if (post) {
+                const comment = post.comments.find(c => c.id === commentId);
+                if (comment) {
+                    comment.likes += 1;
+                    localStorage.setItem("posts", JSON.stringify(posts));
+                    renderPosts();
+                }
+            }
+        }
+
+        // 댓글 섹션 토글
+        function toggleComments(postId) {
+            const commentSection = document.getElementById(`comments-${postId}`);
+            const commentButton = document.getElementById(`comment-button-${postId}`);
+            
+            if (commentSection.style.display === 'none' || !commentSection.style.display) {
+                commentSection.style.display = 'block';
+                commentButton.innerHTML = '<i class="fas fa-comment"></i> 댓글 숨기기';
+            } else {
+                commentSection.style.display = 'none';
+                commentButton.innerHTML = '<i class="fas fa-comment"></i> 댓글 보기';
+            }
+        }
+
+        // 게시글 및 댓글 렌더링
+        function renderPosts() {
+            let posts = JSON.parse(localStorage.getItem("posts")) || [];
+            const sortOption = document.getElementById("postSortOption").value;
+            
+            // 정렬 옵션에 따라 게시물 정렬
+            switch (sortOption) {
+                case "newest":
+                    posts.sort((a, b) => b.id - a.id);
+                    break;
+                case "oldest":
+                    posts.sort((a, b) => a.id - b.id);
+                    break;
+                case "comments":
+                    posts.sort((a, b) => b.comments.length - a.comments.length);
+                    break;
+            }
+            
+            const postList = document.getElementById("postList");
+            
+            if (posts.length === 0) {
+                postList.innerHTML = `
+                    <div class="text-center my-5">
+                        <p>아직 게시물이 없습니다. 첫 번째 게시물을 작성해 보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            postList.innerHTML = posts
+                .map(post => {
+                    const hasComments = post.comments.length > 0;
+                    const commentButtonText = hasComments ? 
+                        `<i class="fas fa-comment"></i> 댓글 보기 (${post.comments.length})` : 
+                        `<i class="fas fa-comment"></i> 댓글 작성`;
+                    
+                    return `
+                        <div class="post-item">
+                            <div class="post-header">
+                                <h5>${post.title}</h5>
+                                <small>${post.author}</small>
+                            </div>
+                            <div class="post-content">
+                                ${post.content.replace(/\n/g, '<br>')}
+                            </div>
+                            <div class="post-footer">
+                                <span>${post.timestamp}</span>
+                                <div class="post-actions">
+                                    <button onclick="likePost(${post.id})" class="action-button">
+                                        <i class="fas fa-thumbs-up"></i> 좋아요 ${post.likes}
+                                    </button>
+                                    <button id="comment-button-${post.id}" onclick="toggleComments(${post.id})" class="action-button">
+                                        ${commentButtonText}
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="comments-${post.id}" style="display: ${hasComments ? 'block' : 'none'}">
+                                <div class="comments">
+                                    ${post.comments.map(comment => `
+                                        <div class="comment-item">
+                                            <div class="comment-header">
+                                                <small>${comment.author}</small>
+                                                <small>${comment.timestamp}</small>
+                                            </div>
+                                            <div class="comment-content">
+                                                ${comment.content.replace(/\n/g, '<br>')}
+                                            </div>
+                                            <div class="comment-footer">
+                                                <button onclick="likeComment(${post.id}, ${comment.id})" class="action-button">
+                                                    <i class="fas fa-thumbs-up"></i> ${comment.likes}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="comment-form mt-2">
+                                    <textarea id="commentInput-${post.id}" placeholder="댓글을 작성하세요..." rows="2"></textarea>
+                                    <button onclick="addComment(${post.id})" class="btn btn-secondary w-100">댓글 작성</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join("");
+        }
+
+        // 뉴스 가져오기 (딥서치 API가 아닌 가상의 뉴스 데이터로 대체)
+        async function fetchNews() {
+            const newsFeed = document.getElementById("newsFeed");
+            newsFeed.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>뉴스를 불러오는 중...</div>
+                </div>
+            `;
+            
+            const category = document.getElementById("newsCategory").value;
+            
+            try {
+                // 실제로는 여기서 딥서치 API를 호출해야 합니다
+                // 현재는 가상의 뉴스 데이터를 생성합니다
+                await new Promise(resolve => setTimeout(resolve, 1000)); // 로딩 효과를 위한 지연
+                
+                // 가상의 뉴스 데이터 - 실제 구현 시에는 API 응답으로 대체
+                const mockNews = getMockNews(category);
+                renderNews(mockNews);
+            } catch (error) {
+                console.error("뉴스 가져오기 오류:", error);
+                newsFeed.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 뉴스를 가져오는 중 오류가 발생했습니다.
+                        <button onclick="fetchNews()" class="btn btn-sm btn-outline-danger mt-2">다시 시도</button>
+                    </div>
+                `;
+            }
+        }
+
+        // 가상의 뉴스 데이터 생성 (실제 구현 시 삭제)
+        function getMockNews(category) {
+            const currentDate = new Date();
+            
+            const newsData = {
+                "비트코인": [
+                    {
+                        title: "비트코인, 연중 최고가 경신... 투자자들 관심 집중",
+                        url: "#",
+                        summary: "암호화폐 시장의 선두주자인 비트코인이 오늘 연중 최고가를 경신하며 투자자들의 관심이 집중되고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 2)
+                    },
+                    {
+                        title: "SEC, 비트코인 ETF 추가 승인... 시장 확대 전망",
+                        url: "#",
+                        summary: "미국 증권거래위원회(SEC)가 추가 비트코인 ETF를 승인하면서 암호화폐 시장의 확대가 전망됩니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 5)
+                    },
+                    {
+                        title: "주요 금융기관들, 비트코인 투자 확대 발표",
+                        url: "#",
+                        summary: "글로벌 금융기관들이 잇따라 비트코인 투자 포트폴리오 확대를 발표하고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 8)
+                    }
+                ],
+                "주식시장": [
+                    {
+                        title: "미 연준, 금리 동결 결정... 주식시장 상승세",
+                        url: "#",
+                        summary: "미국 연방준비제도(Fed)가 기준금리 동결을 결정하면서 글로벌 주식시장이 상승세를 보이고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 1)
+                    },
+                    {
+                        title: "코스피, 외국인 매수세에 상승 마감",
+                        url: "#",
+                        summary: "한국 증시가 외국인 투자자들의 매수세에 힘입어 상승 마감했습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 4)
+                    },
+                    {
+                        title: "테크 기업 실적 호조... 나스닥 강세",
+                        url: "#",
+                        summary: "주요 기술 기업들의 실적 호조에 힘입어 나스닥 지수가 강세를 보이고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 7)
+                    }
+                ],
+                "경제전망": [
+                    {
+                        title: "IMF, 글로벌 경제성장률 상향 조정",
+                        url: "#",
+                        summary: "국제통화기금(IMF)이 올해 글로벌 경제성장률 전망치를 상향 조정했습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 3)
+                    },
+                    {
+                        title: "전문가들, 내년 경기 회복세 전망",
+                        url: "#",
+                        summary: "경제 전문가들이 내년 글로벌 경제의 완만한 회복세를 전망하고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 6)
+                    },
+                    {
+                        title: "아시아 경제, 예상보다 빠른 성장세",
+                        url: "#",
+                        summary: "아시아 주요국 경제가 예상보다 빠른 성장세를 보이며 글로벌 경제 회복을 주도하고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 9)
+                    }
+                ],
+                "금리": [
+                    {
+                        title: "한국은행, 기준금리 동결 결정",
+                        url: "#",
+                        summary: "한국은행 금융통화위원회가 기준금리를 현 수준에서 동결하기로 결정했습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 2)
+                    },
+                    {
+                        title: "시장 전문가들, 연내 추가 금리 인하 전망",
+                        url: "#",
+                        summary: "금융시장 전문가들은 인플레이션 안정화에 따라 연내 추가 금리 인하가 있을 것으로 전망하고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 5)
+                    },
+                    {
+                        title: "금리 인하 기대감에 채권시장 강세",
+                        url: "#",
+                        summary: "주요국 중앙은행들의 금리 인하 기대감에 글로벌 채권시장이 강세를 보이고 있습니다.",
+                        published_at: currentDate.setHours(currentDate.getHours() - 8)
+                    }
+                ]
+            };
+            
+            return newsData[category] || newsData["비트코인"];
+        }
+
+        // 뉴스 렌더링
+        function renderNews(articles) {
+            const newsFeed = document.getElementById("newsFeed");
+            
+            if (!articles || articles.length === 0) {
+                newsFeed.innerHTML = `
+                    <div class="text-center my-5">
+                        <p>현재 표시할 뉴스가 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            newsFeed.innerHTML = articles
+                .map(article => {
+                    const date = new Date(article.published_at);
+                    return `
+                        <div class="news-item">
+                            <div class="news-title">
+                                <a href="${article.url}" target="_blank">${article.title}</a>
+                            </div>
+                            <div class="news-summary">${article.summary}</div>
+                            <div class="news-date">
+                                <small><i class="far fa-clock"></i> ${date.toLocaleString()}</small>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join("");
+        }
+
+        // 실제 딥서치 API를 사용한 뉴스 가져오기 함수 (현재는 주석 처리)
+        // 추후 가상의 뉴스 데이터 대신 이 함수를 활성화하세요
+        
+        async function fetchRealNews() {
+            const category = document.getElementById("newsCategory").value;
+            const apiKey = "a25af260176e4ef1a91ac404b02ff0a4"; // 딥서치 API 키
+            const url = `https://api.deepsearch.com/v1/news?query=${encodeURIComponent(category)}&lang=ko&size=5`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        "X-API-KEY": apiKey
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === "success" && data.data && data.data.length > 0) {
+                    renderNews(data.data);
+                } else {
+                    throw new Error("뉴스 데이터를 가져오지 못했습니다.");
+                }
+            } catch (error) {
+                console.error("뉴스 가져오기 오류:", error);
+                document.getElementById("newsFeed").innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> 뉴스를 가져오는 중 오류가 발생했습니다.
+                        <button onclick="fetchRealNews()" class="btn btn-sm btn-outline-danger mt-2">다시 시도</button>
+                    </div>
+                `;
+            }
+        }
+        
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPosts();
+            fetchNews();
+            setInterval(fetchNews, 600000); // 10분마다 뉴스 업데이트
+        });
+    </script>
+</body>
+</html>
